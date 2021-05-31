@@ -28,18 +28,7 @@ public class HeaderUtil {
         }
         LinkedHashMap<String, String> map = new LinkedHashMap<>();
         list.forEach((value) -> {
-            String[] toArray = value.split(";");
-            String[] mapKV = null;
-            for (String item : toArray) {
-                mapKV = item.split("=");
-                if (mapKV.length == 1) {
-                    map.put(mapKV[0], "");
-                } else if (mapKV.length == 2) {
-                    map.put(mapKV[0], StringUtil.formatEmptyStr(mapKV[1]));
-                } else {
-                    throw new RuntimeException("cookie format error.");
-                }
-            }
+            map.putAll(CookieUtil.toCookiesMap(value));
         });
         return map;
     }

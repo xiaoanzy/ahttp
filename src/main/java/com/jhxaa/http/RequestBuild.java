@@ -1,5 +1,6 @@
 package com.jhxaa.http;
 
+import com.jhxaa.http.proxy.BaseProxy;
 import com.jhxaa.http.proxy.HttpProxy;
 import com.jhxaa.http.util.CollectionUtil;
 import com.jhxaa.http.util.ObjectUtil;
@@ -12,7 +13,7 @@ public class RequestBuild implements Build<Response> {
     Map<String, String> headers;
     Map<String, String> cookies;
     Map<String, String> params;
-    HttpProxy baseProxy;
+    BaseProxy baseProxy;
     Request.Method method;
     String url;
 
@@ -91,7 +92,7 @@ public class RequestBuild implements Build<Response> {
         return this;
     }
 
-    public HttpProxy getBaseProxy() {
+    public BaseProxy getBaseProxy() {
         return baseProxy;
     }
 
@@ -103,13 +104,18 @@ public class RequestBuild implements Build<Response> {
 
     public Request.Method getMethod() {
         return method;
-
     }
 
     public RequestBuild setMethod(Request.Method method) {
         this.method = method;
         return this;
     }
+
+    public Request getRequest() {
+        checkBuildParam();
+        return new Request(this);
+    }
+
 
     @Override
     public Response build() {

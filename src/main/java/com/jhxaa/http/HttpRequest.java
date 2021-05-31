@@ -1,77 +1,40 @@
 package com.jhxaa.http;
 
-import com.jhxaa.http.proxy.HttpProxy;
-
-import java.util.Map;
+import com.jhxaa.http.commons.HttpRequestCoomons;
+import com.jhxaa.http.util.CookieUtil;
 
 public class HttpRequest extends Request {
 
-
     public HttpRequest() {
-
+        super();
     }
 
-    public HttpRequest(HttpRequestBuild build) {
-        // super(build);
+    public HttpRequest(RequestBuild build) {
+        super(build);
     }
 
+    public static Request get(String url) {
+        return RequestBuild.createBuild().setUrl(url).setMethod(Method.GET).getRequest();
+    }
+
+    public static Request post(String url) {
+        return RequestBuild.createBuild().setUrl(url).setMethod(Method.POST).getRequest();
+    }
+
+    public Request setCookieStr(String c) {
+        CookieUtil.toCookiesMap(c).forEach((k, v) -> {
+            super.setCookie(k, v);
+        });
+        return this;
+    }
+
+    public Request setUserAgent(String userAgentStr) {
+        super.setHeader(HttpRequestCoomons.REQUEST_UER_AGENT, userAgentStr);
+        return this;
+    }
 
     @Override
     public Response build() {
-        return null;
-    }
-
-
-    class HttpRequestBuild implements Build<HttpRequest> {
-        Map<String, String> headers;
-        Map<String, String> cookies;
-        Map<String, String> datas;
-        HttpProxy httpProxy;
-        Method method;
-
-        public Method getMethod() {
-            return method;
-        }
-
-        public void setMethod(Method method) {
-            this.method = method;
-        }
-
-        public Map<String, String> getHeaders() {
-            return headers;
-        }
-
-        public void setHeaders(Map<String, String> headers) {
-            this.headers = headers;
-        }
-
-        public Map<String, String> getCookies() {
-            return cookies;
-        }
-
-        public void setCookies(Map<String, String> cookies) {
-            this.cookies = cookies;
-        }
-
-        public Map<String, String> getDatas() {
-            return datas;
-        }
-
-        public void setDatas(Map<String, String> datas) {
-            this.datas = datas;
-        }
-
-        public HttpProxy getProxyIp() {
-            return httpProxy;
-        }
-
-        public void setProxyIp(HttpProxy httpProxy) {
-            this.httpProxy = httpProxy;
-        }
-
-
-        public HttpRequest build() {
-            return new HttpRequest(this);
-        }
+        return super.build();
     }
 }

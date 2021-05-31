@@ -2,6 +2,7 @@ package com.jhxaa.http;
 
 import com.jhxaa.http.commons.HttpRequestCoomons;
 import com.jhxaa.http.proxy.BaseProxy;
+import com.jhxaa.http.proxy.HttpProxy;
 import com.jhxaa.http.util.*;
 
 import java.io.BufferedReader;
@@ -16,13 +17,9 @@ import java.util.Map;
 
 public class Request implements Build<Response> {
     public static int DEFAULT_REQUEST_TIME = 10000;
-    static Map<String, String> headers;
-    static Map<String, String> cookies;
-    static Map<String, String> datas;
-
-    static {
-
-    }
+    Map<String, String> headers;
+    Map<String, String> cookies;
+    Map<String, String> datas;
 
     BaseProxy baseProxy;
     Method method;
@@ -31,7 +28,6 @@ public class Request implements Build<Response> {
     private BufferedReader br = null;
     private OutputStream os = null;
     private HttpURLConnection connection = null;
-
 
     public Request() {
 
@@ -44,6 +40,86 @@ public class Request implements Build<Response> {
         this.baseProxy = build.baseProxy;
         this.method = build.method;
         this.url = build.url;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public Request setUrl(String url) {
+        this.url = url;
+        return this;
+    }
+
+    public Map<String, String> getHeaders() {
+        return headers;
+    }
+
+    public Request setHeaders(Map<String, String> headers) {
+        this.headers = headers;
+        return this;
+    }
+
+    public Map<String, String> getCookies() {
+        return cookies;
+    }
+
+    public Request setCookies(Map<String, String> cookies) {
+        this.cookies = cookies;
+        return this;
+    }
+
+    public Request setCookie(String k, String v) {
+        if (ObjectUtil.isEmptyMap(cookies)) {
+            cookies = CollectionUtil.newKVStringLinkedHashMap();
+        }
+        cookies.put(k, v);
+        return this;
+    }
+
+    public Map<String, String> getParams() {
+        return datas;
+    }
+
+    public Request setParams(Map<String, String> params) {
+        this.datas = params;
+        return this;
+
+    }
+
+    public Request setParam(String k, String v) {
+        if (ObjectUtil.isEmptyMap(datas)) {
+            datas = CollectionUtil.newKVStringLinkedHashMap();
+        }
+        datas.put(k, v);
+        return this;
+    }
+
+    public Request setHeader(String k, String v) {
+        if (ObjectUtil.isEmptyMap(headers)) {
+            headers = CollectionUtil.newKVStringLinkedHashMap();
+        }
+        headers.put(k, v);
+        return this;
+    }
+
+    public BaseProxy getBaseProxy() {
+        return baseProxy;
+    }
+
+    public Request setBaseProxy(HttpProxy baseProxy) {
+        this.baseProxy = baseProxy;
+        return this;
+
+    }
+
+    public Request.Method getMethod() {
+        return method;
+    }
+
+    public Request setMethod(Request.Method method) {
+        this.method = method;
+        return this;
     }
 
     public void openConnection(String url) {
@@ -74,6 +150,9 @@ public class Request implements Build<Response> {
             boolean flag = Method.POST.toString().equals(method.toString());
             String cententType = flag ? HttpRequestCoomons.REQUEST_TYPE_POST : HttpRequestCoomons.REQUEST_TYPE_JSON;
             connection.setRequestProperty(HttpRequestCoomons.CONTENT_TYPE, cententType);
+        }
+        if (ObjectUtil.isNotEmptyMap(cookies)) {
+            connection.setRequestProperty("Cookie", CookieUtil.toCookieStr(cookies));
         }
     }
 

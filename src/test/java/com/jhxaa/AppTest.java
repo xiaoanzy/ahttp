@@ -20,7 +20,7 @@ public class AppTest {
         long s = System.currentTimeMillis();
         Response build = RequestBuild.createBuild().setUrl("http://www.jhxaa.com/api/findLinkInfoByOneMenuId").build();
         System.out.println(build.getCookies());
-//        System.out.println(JSON.toJSONString(build));
+        System.out.println(JSON.toJSONString(build));
         System.out.println(build.getResultStream());
         System.out.println(System.currentTimeMillis() - s);
     }
@@ -44,4 +44,6 @@ public class AppTest {
         }
         System.out.println(JSON.toJSONString(map));
     }
+
+
 }
